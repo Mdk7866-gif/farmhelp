@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str
 
+    # Telegram
+    TELEGRAM_BOT_TOKEN: str
+    TELEGRAM_CHAT_ID: str
+
     # Pydantic v2 config
     model_config = SettingsConfigDict(
         env_file=".env",
