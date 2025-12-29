@@ -6,7 +6,9 @@ from app.routes import (
     submitcontactfoamdata,
     adminapplicationfoamdata,
     admincontactfoamdata,
-    farmerdata
+    farmerdata,
+    democropprediction,
+    demosenserdata
 )
 
 api_router = APIRouter()
@@ -18,3 +20,5 @@ api_router.include_router(submitcontactfoamdata.router)
 api_router.include_router(adminapplicationfoamdata.router)
 api_router.include_router(admincontactfoamdata.router)
 api_router.include_router(farmerdata.router)
+api_router.include_router(democropprediction.router)
+api_router.include_router(demosenserdata.router)
