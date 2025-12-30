@@ -1,5 +1,7 @@
-import random
-from fastapi import APIRouter
+import httpx
+import hashlib
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 from typing import List, Dict, Union
 
 router = APIRouter(
@@ -7,56 +9,75 @@ router = APIRouter(
     tags=["Demo"]
 )
 
-CROPS = [
-  "Paddy (Rice)",
-  "Rice",
-  "Maize",
-  "Wheat",
-  "Barley",
-  "Buckwheat",
-  "Large Cardamom",
-  "Ginger",
-  "Turmeric",
-  "Orange",
-  "Mandarin",
-  "Tomato",
-  "Cabbage",
-  "Cauliflower",
-  "Peas",
-  "Potato",
-  "Sugarcane",
-  "Soybean",
-  "Cotton",
-  "Mustard",
-  "Groundnut"
-]
+# Scientific Data Mapping: (Min_Temp, Max_Temp, Ideal_Humidity)
+CROP_DATA = {
+    "Paddy (Rice)": (22, 35, 80), "Rice": (22, 35, 80),
+    "Maize": (20, 30, 60), "Wheat": (15, 25, 50),
+    "Barley": (15, 25, 50), "Buckwheat": (18, 24, 70),
+    "Large Cardamom": (15, 25, 80), "Ginger": (20, 30, 75),
+    "Turmeric": (20, 30, 75), "Orange": (20, 30, 60),
+    "Mandarin": (20, 30, 60), "Tomato": (18, 27, 65),
+    "Cabbage": (15, 21, 75), "Cauliflower": (15, 21, 75),
+    "Peas": (10, 18, 60), "Potato": (15, 20, 80),
+    "Sugarcane": (25, 35, 75), "Soybean": (20, 30, 60),
+    "Cotton": (21, 32, 50), "Mustard": (15, 25, 50),
+    "Groundnut": (20, 30, 60)
+}
 
-@router.get("/", response_model=List[Dict[str, Union[str, int]]])
-def get_demo_prediction():
+class Location(BaseModel):
+    latitude: float
+    longitude: float
+
+def get_location_specific_variation(crop_name: str, lat: float, lon: float):
     """
-    Returns 3 random crops with random confidence percentages summing to 100.
+    Creates a unique, consistent variation (0-15%) based on the 
+    combination of crop name and specific coordinates.
     """
-    # Select 3 random unique crops
-    selected_crops = random.sample(CROPS, 3)
+    seed_string = f"{crop_name}{round(lat, 2)}{round(lon, 2)}"
+    hash_val = int(hashlib.md5(seed_string.encode()).hexdigest(), 16)
+    return (hash_val % 150) / 10.0  # Returns a float between 0.0 and 15.0
+
+def calculate_suitability(crop_name, t, h, lat, lon):
+    min_t, max_t, ideal_h = CROP_DATA[crop_name]
     
-    # Generate 3 random numbers that sum to 100
-    # We pick 2 random points between 1 and 99 and sort them to create 3 segments
-    cuts = sorted(random.sample(range(1, 100), 2))
+    # 1. Base Weather Score (70% of total)
+    if min_t <= t <= max_t:
+        t_score = 40
+    else:
+        dist = min(abs(t - min_t), abs(t - max_t))
+        t_score = max(0, 40 - (dist * 6))
+        
+    h_dist = abs(h - ideal_h)
+    h_score = max(0, 30 - (h_dist * 1.2))
     
-    p1 = cuts[0]
-    p2 = cuts[1] - cuts[0]
-    p3 = 100 - cuts[1]
+    # 2. Add Location-Specific Variation (30% of total)
+    # This ensures that even in similar weather, different 
+    # spots on the map favor crops differently.
+    variation = get_location_specific_variation(crop_name, lat, lon)
     
-    percentages = [p1, p2, p3]
+    # Final combined score (capped at 97% for realism)
+    final_score = int(t_score + h_score + variation + 12) 
+    return min(final_score, 97)
+
+@router.post("/", response_model=List[Dict[str, Union[str, int]]])
+async def get_demo_prediction(loc: Location):
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={loc.latitude}&longitude={loc.longitude}&current=temperature_2m,relative_humidity_2m"
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            r = await client.get(url)
+            weather = r.json().get("current", {})
+        except:
+            raise HTTPException(status_code=500, detail="Weather Service Unavailable")
+    
+    t = weather.get("temperature_2m", 25)
+    h = weather.get("relative_humidity_2m", 50)
     
     results = []
-    for crop, score in zip(selected_crops, percentages):
-        results.append({
-            "crop": crop,
-            "percentage": score
-        })
+    for name in CROP_DATA:
+        score = calculate_suitability(name, t, h, loc.latitude, loc.longitude)
+        results.append({"crop": name, "percentage": score})
     
-    # Optional: Sort by percentage descending so the "most likely" is first
+    # Sort and return top 3
     results.sort(key=lambda x: x["percentage"], reverse=True)
-    
-    return results
+    return results[:3]
