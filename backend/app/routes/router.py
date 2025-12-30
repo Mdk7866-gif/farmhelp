@@ -8,7 +8,11 @@ from app.routes import (
     admincontactfoamdata,
     farmerdata,
     democropprediction,
-    demosenserdata
+    demosenserdata,
+    demotwiliocall,
+    actualtwiliocall,
+    actualcropprediction,
+    actualsenserdata
 )
 
 api_router = APIRouter()
@@ -22,3 +26,8 @@ api_router.include_router(admincontactfoamdata.router)
 api_router.include_router(farmerdata.router)
 api_router.include_router(democropprediction.router)
 api_router.include_router(demosenserdata.router)
+api_router.include_router(demotwiliocall.router)
+api_router.include_router(actualtwiliocall.router)
+api_router.include_router(actualcropprediction.router)
+api_router.include_router(actualsenserdata.router)
+

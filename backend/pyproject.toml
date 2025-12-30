@@ -17,6 +17,7 @@ dependencies = [
     "motor>=3.7.1",
     "python-dotenv>=1.2.1",
     "uvicorn>=0.40.0",
+    "twilio>=9.3.2",
 ]
 
 [project.scripts]
