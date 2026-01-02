@@ -9,13 +9,15 @@ export default function HomePage() {
   return (
     <>
       <section className="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-[calc(100vh-4rem)] flex items-center transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col-reverse md:flex-row items-center gap-10">
+        <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col-reverse md:flex-row items-center gap-12">
 
-          {/* Left Content */}
+          {/* LEFT CONTENT */}
           <div className="w-full md:w-1/2 text-center md:text-left">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight">
               Smart Farming <br />
-              <span className="text-green-700 dark:text-green-500">Made Simple</span>
+              <span className="text-green-700 dark:text-green-500">
+                Made Simple
+              </span>
             </h1>
 
             <p className="mt-6 text-gray-600 dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0">
@@ -44,23 +46,47 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Right Image */}
+          {/* RIGHT IMAGE – ENHANCED & MOBILE FIRST */}
           <div className="w-full md:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-lg aspect-square">
-              {/* Abstract Background Blob (Optional, makes it look premium) */}
-              <div className="absolute inset-0 bg-green-200 dark:bg-green-900/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
+            <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg">
 
-              <img
-                src="/hero-farm.png"
-                alt="Smart farming monitoring dashboard on mobile and tablet"
-                className="relative z-10 w-full h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500"
-              />
+              {/* Gradient Glow Background */}
+              <div className="absolute -inset-6 bg-gradient-to-tr from-green-300 via-emerald-200 to-green-100 
+                              dark:from-green-900/40 dark:via-emerald-800/30 dark:to-green-700/20
+                              rounded-[2.5rem] blur-3xl opacity-70" />
+
+              {/* Image Card */}
+              <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/40 dark:border-white/10 bg-white/30 dark:bg-white/5 backdrop-blur-xl">
+
+                <img
+                  src="/hero-farm.png"
+                  alt="Smart farming monitoring via mobile"
+                  className="w-full h-auto object-cover"
+                />
+
+                {/* Glass overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 pointer-events-none" />
+              </div>
+
+              {/* Floating Badge – Sensor */}
+              <div className="absolute -top-4 -left-4 bg-white dark:bg-gray-900 shadow-lg rounded-xl px-3 py-2 text-xs font-semibold text-green-700 dark:text-green-400">
+                🌱 Soil Sensors
+              </div>
+
+              {/* Floating Badge – AI */}
+              <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-900 shadow-lg rounded-xl px-3 py-2 text-xs font-semibold text-green-700 dark:text-green-400">
+                🤖 AI Crop Advice
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      <ApplicationForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+      <ApplicationForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+      />
     </>
   );
 }
