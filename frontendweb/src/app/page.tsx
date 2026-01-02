@@ -1,65 +1,55 @@
-import Image from "next/image";
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <section className="bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-[calc(100vh-4rem)] flex items-center transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col-reverse md:flex-row items-center gap-10">
+
+        {/* Left Content */}
+        <div className="w-full md:w-1/2 text-center md:text-left">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight">
+            Smart Farming <br />
+            <span className="text-green-700 dark:text-green-500">Made Simple</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+
+          <p className="mt-6 text-gray-600 dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0">
+            Monitor your farms remotely, get instant alerts, and receive
+            AI-based crop recommendations — all using your mobile phone.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="/farms"
+              className="px-8 py-4 bg-green-700 dark:bg-green-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:bg-green-800 dark:hover:bg-green-500 transform hover:-translate-y-0.5 transition-all duration-200"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              View My Farms
+            </a>
+
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="/contact"
+              className="px-8 py-4 border-2 border-green-700 dark:border-green-500 text-green-700 dark:text-green-400 rounded-xl font-semibold hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200"
             >
-              Learning
-            </a>{" "}
-            center.
+              Get Service
+            </a>
+          </div>
+
+          <p className="mt-8 text-sm text-gray-500 dark:text-gray-400 font-medium">
+            📞 Not educated? Visit our nearest service center.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Right Image */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <div className="relative w-full max-w-lg aspect-square">
+            {/* Abstract Background Blob (Optional, makes it look premium) */}
+            <div className="absolute inset-0 bg-green-200 dark:bg-green-900/30 rounded-full filter blur-3xl opacity-50 animate-pulse"></div>
+
+            <img
+              src="/hero-farm.png"
+              alt="Smart farming monitoring dashboard on mobile and tablet"
+              className="relative z-10 w-full h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </section>
   );
 }
