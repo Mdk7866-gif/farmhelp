@@ -44,6 +44,23 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
 
     // Form State
     const [formData, setFormData] = useState<Farmer>(farmer);
+    // Lightbox state for image preview and zoom
+    const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const [imageScale, setImageScale] = useState(1);
+
+    const handleImageClick = (url: string) => {
+        setLightboxImage(url);
+        setImageScale(1);
+    };
+
+    const handleWheel = (e: React.WheelEvent<HTMLImageElement>) => {
+        e.preventDefault();
+        const delta = e.deltaY;
+        setImageScale(prev => {
+            const newScale = prev - delta * 0.01;
+            return Math.min(Math.max(newScale, 0.5), 3);
+        });
+    };
 
     // Reset form when entering/exiting edit mode
     const toggleEdit = () => {
@@ -285,7 +302,7 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                             {/* Image */}
                                             <div className="w-full md:w-48 h-32 flex-shrink-0 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden">
                                                 {farm.photo ? (
-                                                    <img src={farm.photo} alt={`Farm ${index + 1}`} className="w-full h-full object-cover" />
+                                                    <img src={farm.photo} alt={`Farm ${index + 1}`} className="w-full h-full object-cover cursor-pointer" onClick={() => handleImageClick(farm.photo!)} />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-gray-400">
                                                         <Tractor className="w-8 h-8 opacity-50" />
@@ -339,7 +356,25 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                 </div>
                             </div>
 
-                            {/* Edit Actions Footer */}
+                            {/* Lightbox Modal */}
+                            {lightboxImage && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setLightboxImage(null)}>
+                                    <div className="relative max-w-3xl max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                                        <button className="absolute top-2 right-2 text-white bg-gray-800/60 rounded-full p-1" onClick={() => setLightboxImage(null)}>
+                                            <X className="w-6 h-6" />
+                                        </button>
+                                        <img
+                                            src={lightboxImage}
+                                            alt="Farm"
+                                            className="max-w-full max-h-full object-contain cursor-pointer"
+                                            style={{ transform: `scale(${imageScale})` }}
+                                            onWheel={handleWheel}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+
                             {isEditing && (
                                 <div className="sticky bottom-0 -mx-6 -mb-6 p-6 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
                                     <button
@@ -363,6 +398,6 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
