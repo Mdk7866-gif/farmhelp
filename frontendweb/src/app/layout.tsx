@@ -10,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
+      <body className="flex flex-col min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
