@@ -45,7 +45,7 @@ export default function AdminPage() {
 
                         {/* Application Forms Card */}
                         <Link
-                            href="/admin/applicationfoam"
+                            href="/admin/applicationform"
                             className="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 dark:border-gray-800 transition-all duration-300 transform hover:-translate-y-1 block p-8 h-64 flex flex-col justify-center items-center text-center"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent group-hover:from-blue-500/20 transition-all duration-500" />
@@ -60,7 +60,7 @@ export default function AdminPage() {
 
                         {/* Contact Forms Card */}
                         <Link
-                            href="/admin/contect"
+                            href="/admin/contact"
                             className="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 dark:border-gray-800 transition-all duration-300 transform hover:-translate-y-1 block p-8 h-64 flex flex-col justify-center items-center text-center"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent group-hover:from-amber-500/20 transition-all duration-500" />

@@ -145,6 +145,9 @@ export default function FarmsPage() {
                                 // For now just redirecting to home where the button is visible
                             }} className="text-green-600 hover:text-green-700 font-semibold hover:underline">Apply here</Link>
                         </p>
+                        <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">
+                            Our sensors monitor soil moisture and water levels in real-time via ThingSpeak. Get alerts via call if issues arise. Predict top crops for the season with our ML model!
+                        </p>
                     </div>
                 </div>
             </main>
