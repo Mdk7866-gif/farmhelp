@@ -12,7 +12,8 @@ from app.routes import (
     demotwiliocall,
     actualtwiliocall,
     actualcropprediction,
-    actualsenserdata
+    actualsenserdata,
+    verifyadmin
 )
 
 api_router = APIRouter()
@@ -30,4 +31,5 @@ api_router.include_router(demotwiliocall.router)
 api_router.include_router(actualtwiliocall.router)
 api_router.include_router(actualcropprediction.router)
 api_router.include_router(actualsenserdata.router)
+api_router.include_router(verifyadmin.router)
 

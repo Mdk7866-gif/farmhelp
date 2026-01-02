@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     TWILIO_AUTH_TOKEN: str
     TWILIO_PHONE_NUMBER: str
 
+    # Admin
+    ADMIN_PANEL_PASSWORD: str
+
     # Pydantic v2 config
     model_config = SettingsConfigDict(
         env_file=".env",
