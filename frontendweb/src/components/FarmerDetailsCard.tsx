@@ -46,26 +46,46 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-    // Sensor Data State
-    const [sensorData, setSensorData] = useState<{ soil_moisture: number; water_tank_level: number } | null>(null);
+    // Sensor Data State (Map sensor_id -> Data)
+    const [sensorDataMap, setSensorDataMap] = useState<Record<string, { soil_moisture: number; water_tank_level: number }>>({});
     const [loadingSensor, setLoadingSensor] = useState(true);
 
     // Fetch Sensor Data on Mount
     useEffect(() => {
         const fetchSensorData = async () => {
             try {
-                // Determine if we should fetch. Only if any farm has a sensor_id.
-                const hasSensor = Object.values(farmer.farms || {}).some(f => f.sensor_id);
-                if (!hasSensor) {
+                const farmsWithSensors = Object.values(farmer.farms || {}).filter(f => f.sensor_id);
+
+                if (farmsWithSensors.length === 0) {
                     setLoadingSensor(false);
                     return;
                 }
 
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/demosenserdata`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setSensorData(data);
-                }
+                // Fetch data for all sensors in parallel
+                const promises = farmsWithSensors.map(async (farm) => {
+                    try {
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/demosenserdata?sensor_id=${farm.sensor_id}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            return { sensor_id: farm.sensor_id, data };
+                        }
+                    } catch (err) {
+                        console.error(`Failed to fetch data for sensor ${farm.sensor_id}`, err);
+                    }
+                    return null;
+                });
+
+                const results = await Promise.all(promises);
+
+                const newSensorMap: Record<string, { soil_moisture: number; water_tank_level: number }> = {};
+                results.forEach(result => {
+                    if (result) {
+                        newSensorMap[result.sensor_id] = result.data;
+                    }
+                });
+
+                setSensorDataMap(newSensorMap);
+
             } catch (error) {
                 console.error('Failed to fetch sensor data', error);
             } finally {
@@ -212,99 +232,103 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
                             </h3>
 
                             <div className="space-y-6">
-                                {Object.entries(farmer.farms || {}).map(([key, farm], index) => (
-                                    <div key={key} className="flex flex-col gap-6 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-shadow hover:shadow-md">
-                                        <div className="flex flex-col md:flex-row gap-6">
-                                            {/* Image */}
-                                            <div className="w-full md:w-48 h-32 flex-shrink-0 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden group relative">
-                                                {farm.photo ? (
-                                                    <div className="w-full h-full relative cursor-pointer" onClick={() => openLightbox(farm.photo!)}>
-                                                        <img
-                                                            src={farm.photo}
-                                                            alt={`Farm ${index + 1}`}
-                                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                                            <ZoomIn className="w-8 h-8 text-white drop-shadow-md" />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                                        <Tractor className="w-8 h-8 opacity-50" />
-                                                    </div>
-                                                )}
-                                            </div>
+                                {Object.entries(farmer.farms || {}).map(([key, farm], index) => {
+                                    const farmSensorData = farm.sensor_id ? sensorDataMap[farm.sensor_id] : null;
 
-                                            {/* Details */}
-                                            <div className="flex-1 space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded">
-                                                        Farm {index + 1}
-                                                    </span>
+                                    return (
+                                        <div key={key} className="flex flex-col gap-6 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-shadow hover:shadow-md">
+                                            <div className="flex flex-col md:flex-row gap-6">
+                                                {/* Image */}
+                                                <div className="w-full md:w-48 h-32 flex-shrink-0 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden group relative">
+                                                    {farm.photo ? (
+                                                        <div className="w-full h-full relative cursor-pointer" onClick={() => openLightbox(farm.photo!)}>
+                                                            <img
+                                                                src={farm.photo}
+                                                                alt={`Farm ${index + 1}`}
+                                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                            />
+                                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                                <ZoomIn className="w-8 h-8 text-white drop-shadow-md" />
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                            <Tractor className="w-8 h-8 opacity-50" />
+                                                        </div>
+                                                    )}
                                                 </div>
 
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div className="space-y-1">
-                                                        <label className="text-xs font-medium text-gray-500">Location / Landmark</label>
-                                                        <p className="text-sm text-gray-700 dark:text-gray-300">{farm.location || 'N/A'}</p>
+                                                {/* Details */}
+                                                <div className="flex-1 space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded">
+                                                            Farm {index + 1}
+                                                        </span>
                                                     </div>
-                                                    <div className="space-y-1">
-                                                        <label className="text-xs font-medium text-gray-500">Sensor ID</label>
-                                                        <div className="flex items-center gap-2">
-                                                            <Cpu className="w-3.5 h-3.5 text-blue-500" />
-                                                            <code className="text-sm bg-gray-100 dark:bg-gray-900 px-1 py-0.5 rounded">{farm.sensor_id || 'N/A'}</code>
+
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div className="space-y-1">
+                                                            <label className="text-xs font-medium text-gray-500">Location / Landmark</label>
+                                                            <p className="text-sm text-gray-700 dark:text-gray-300">{farm.location || 'N/A'}</p>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-xs font-medium text-gray-500">Sensor ID</label>
+                                                            <div className="flex items-center gap-2">
+                                                                <Cpu className="w-3.5 h-3.5 text-blue-500" />
+                                                                <code className="text-sm bg-gray-100 dark:bg-gray-900 px-1 py-0.5 rounded">{farm.sensor_id || 'N/A'}</code>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {/* Live Sensor Data Section */}
+                                            {farm.sensor_id && (
+                                                <div className="mt-2 pt-4 border-t border-gray-100 dark:border-gray-700">
+                                                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                        Live Sensor Status
+                                                    </h4>
+
+                                                    {loadingSensor ? (
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="h-16 bg-gray-100 dark:bg-gray-700/50 rounded-lg animate-pulse" />
+                                                            <div className="h-16 bg-gray-100 dark:bg-gray-700/50 rounded-lg animate-pulse" />
+                                                        </div>
+                                                    ) : farmSensorData ? (
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                            {/* Soil Moisture */}
+                                                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30 flex items-center gap-3 transition-transform hover:scale-[1.02]">
+                                                                <div className="p-2 bg-blue-100 dark:bg-blue-800/40 rounded-lg text-blue-600 dark:text-blue-400">
+                                                                    <Droplets className="w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-xs text-blue-600 dark:text-blue-300 font-medium uppercase tracking-wide">Soil Moisture</div>
+                                                                    <div className="text-lg font-bold text-gray-900 dark:text-white">{farmSensorData.soil_moisture}%</div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Water Level */}
+                                                            <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-100 dark:border-cyan-800/30 flex items-center gap-3 transition-transform hover:scale-[1.02]">
+                                                                <div className="p-2 bg-cyan-100 dark:bg-cyan-800/40 rounded-lg text-cyan-600 dark:text-cyan-400">
+                                                                    <Waves className="w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-xs text-cyan-600 dark:text-cyan-300 font-medium uppercase tracking-wide">Water Tank</div>
+                                                                    <div className="text-lg font-bold text-gray-900 dark:text-white">{farmSensorData.water_tank_level}%</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-500 text-center italic">
+                                                            Sensor data momentarily unavailable.
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
-
-                                        {/* Live Sensor Data Section */}
-                                        {farm.sensor_id && (
-                                            <div className="mt-2 pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                                    Live Sensor Status
-                                                </h4>
-
-                                                {loadingSensor ? (
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="h-16 bg-gray-100 dark:bg-gray-700/50 rounded-lg animate-pulse" />
-                                                        <div className="h-16 bg-gray-100 dark:bg-gray-700/50 rounded-lg animate-pulse" />
-                                                    </div>
-                                                ) : sensorData ? (
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                        {/* Soil Moisture */}
-                                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30 flex items-center gap-3 transition-transform hover:scale-[1.02]">
-                                                            <div className="p-2 bg-blue-100 dark:bg-blue-800/40 rounded-lg text-blue-600 dark:text-blue-400">
-                                                                <Droplets className="w-5 h-5" />
-                                                            </div>
-                                                            <div>
-                                                                <div className="text-xs text-blue-600 dark:text-blue-300 font-medium uppercase tracking-wide">Soil Moisture</div>
-                                                                <div className="text-lg font-bold text-gray-900 dark:text-white">{sensorData.soil_moisture}%</div>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Water Level */}
-                                                        <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-100 dark:border-cyan-800/30 flex items-center gap-3 transition-transform hover:scale-[1.02]">
-                                                            <div className="p-2 bg-cyan-100 dark:bg-cyan-800/40 rounded-lg text-cyan-600 dark:text-cyan-400">
-                                                                <Waves className="w-5 h-5" />
-                                                            </div>
-                                                            <div>
-                                                                <div className="text-xs text-cyan-600 dark:text-cyan-300 font-medium uppercase tracking-wide">Water Tank</div>
-                                                                <div className="text-lg font-bold text-gray-900 dark:text-white">{sensorData.water_tank_level}%</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-500 text-center italic">
-                                                        Sensor data momentarily unavailable.
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
