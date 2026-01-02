@@ -210,9 +210,17 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                             onChange={(e) => setCallLanguage(e.target.value)}
                                             className="w-full rounded-lg border border-gray-300 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
                                         >
-                                            <option value="Hindi">Hindi</option>
                                             <option value="English">English</option>
+                                            <option value="Hindi">Hindi</option>
+                                            <option value="Bengali">Bengali</option>
+                                            <option value="Marathi">Marathi</option>
+                                            <option value="Telugu">Telugu</option>
+                                            <option value="Tamil">Tamil</option>
                                             <option value="Gujarati">Gujarati</option>
+                                            <option value="Kannada">Kannada</option>
+                                            <option value="Odia (Oriya)">Odia (Oriya)</option>
+                                            <option value="Malayalam">Malayalam</option>
+                                            <option value="Punjabi">Punjabi</option>
                                         </select>
                                     </div>
                                 </div>
@@ -249,7 +257,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                                     value={farm.location}
                                                     onChange={(e) => updateFarm(farm.id, 'location', e.target.value)}
                                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 p-3 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
-                                                    placeholder="e.g. Near River Side"
+                                                    placeholder="e.g. Google Map Location URL"
                                                 />
                                             </div>
                                             <div>
