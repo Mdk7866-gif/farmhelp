@@ -1,1 +1,2 @@
-hii there
+hello bide
+we will make the react native app later and deploy it on the play store
