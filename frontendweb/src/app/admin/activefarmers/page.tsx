@@ -11,6 +11,7 @@ import {
     Tractor
 } from 'lucide-react';
 import FarmerDetailsCard from '@/components/AdminFarmerDetailsCard';
+import Pagination from '@/components/Pagination';
 
 interface Farm {
     photo: string | null;
@@ -32,6 +33,10 @@ export default function ActiveFarmersPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [error, setError] = useState<string | null>(null);
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     // Modal State
     const [selectedFarmer, setSelectedFarmer] = useState<Farmer | null>(null);
@@ -58,6 +63,11 @@ export default function ActiveFarmersPage() {
         fetchFarmers();
     }, []);
 
+    // Reset pagination when search changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
     // Handlers for modal updates
     const handleUpdateFarmer = (updatedFarmer: Farmer) => {
         setFarmers(prev => prev.map(f => f._id === updatedFarmer._id ? updatedFarmer : f));
@@ -76,6 +86,13 @@ export default function ActiveFarmersPage() {
             farmer.mobile_no?.includes(searchQuery)
         );
     });
+
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredFarmers.length / itemsPerPage);
+    const paginatedFarmers = filteredFarmers.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 p-4 sm:p-6 lg:p-8 font-sans">
@@ -117,7 +134,7 @@ export default function ActiveFarmersPage() {
                 {/* Content Grid */}
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-                        {[1, 2, 3, 4, 5, 6].map(i => (
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                             <div key={i} className="h-48 bg-gray-200 dark:bg-gray-800 rounded-2xl" />
                         ))}
                     </div>
@@ -132,44 +149,52 @@ export default function ActiveFarmersPage() {
                         <p className="text-gray-500 dark:text-gray-500">Try adjusting your search query.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredFarmers.map(farmer => (
-                            <div
-                                key={farmer._id}
-                                onClick={() => setSelectedFarmer(farmer)}
-                                className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-100 dark:border-gray-800 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
-                            >
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="bg-green-100 dark:bg-green-900/30 w-12 h-12 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-lg group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
-                                        {farmer.name.charAt(0).toUpperCase()}
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {paginatedFarmers.map(farmer => (
+                                <div
+                                    key={farmer._id}
+                                    onClick={() => setSelectedFarmer(farmer)}
+                                    className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-100 dark:border-gray-800 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+                                >
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="bg-green-100 dark:bg-green-900/30 w-12 h-12 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-lg group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
+                                            {farmer.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs font-medium text-gray-600 dark:text-gray-400">
+                                            <Tractor className="w-3 h-3" />
+                                            {Object.keys(farmer.farms || {}).length}
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs font-medium text-gray-600 dark:text-gray-400">
-                                        <Tractor className="w-3 h-3" />
-                                        {Object.keys(farmer.farms || {}).length}
+
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 truncate">
+                                        {farmer.name}
+                                    </h3>
+
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <Smartphone className="w-4 h-4 text-gray-400" />
+                                            {farmer.mobile_no}
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <MapPin className="w-4 h-4 text-gray-400" />
+                                            <span className="truncate">{farmer.home_address}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <Languages className="w-4 h-4 text-gray-400" />
+                                            {farmer.call_language}
+                                        </div>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
 
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 truncate">
-                                    {farmer.name}
-                                </h3>
-
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                        <Smartphone className="w-4 h-4 text-gray-400" />
-                                        {farmer.mobile_no}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                        <MapPin className="w-4 h-4 text-gray-400" />
-                                        <span className="truncate">{farmer.home_address}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                        <Languages className="w-4 h-4 text-gray-400" />
-                                        {farmer.call_language}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    </>
                 )}
             </div>
 
