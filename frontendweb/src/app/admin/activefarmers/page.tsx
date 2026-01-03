@@ -36,7 +36,7 @@ export default function ActiveFarmersPage() {
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 12;
 
     // Modal State
     const [selectedFarmer, setSelectedFarmer] = useState<Farmer | null>(null);
