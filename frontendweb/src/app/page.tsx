@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link'; // Import Link
 import ApplicationForm from '@/components/ApplicationForm';
 
 export default function HomePage() {
@@ -26,12 +27,12 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <a
+              <Link
                 href="/farms"
-                className="px-8 py-4 bg-green-700 dark:bg-green-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:bg-green-800 dark:hover:bg-green-500 transform hover:-translate-y-0.5 transition-all duration-200"
+                className="px-8 py-4 bg-green-700 dark:bg-green-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:bg-green-800 dark:hover:bg-green-500 transform hover:-translate-y-0.5 transition-all duration-200 text-center"
               >
                 View My Farms
-              </a>
+              </Link>
 
               <button
                 onClick={() => setIsFormOpen(true)}
@@ -41,8 +42,15 @@ export default function HomePage() {
               </button>
             </div>
 
+            {/* UPDATED LINK SECTION */}
             <p className="mt-8 text-sm text-gray-500 dark:text-gray-400 font-medium">
-              📞 Not educated? Visit our nearest service center.
+              📞 Not educated?{' '}
+              <Link 
+                href="/service-centers" 
+                className="text-green-700 dark:text-green-500 hover:underline font-bold transition-colors"
+              >
+                Visit our nearest service center.
+              </Link>
             </p>
           </div>
 
