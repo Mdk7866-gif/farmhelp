@@ -257,7 +257,9 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                                     value={farm.location}
                                                     onChange={(e) => updateFarm(farm.id, 'location', e.target.value)}
                                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 p-3 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
-                                                    placeholder="e.g. Google Map Location URL"
+                                                    placeholder="e.g. 18.846558, 74.140798
+
+"
                                                 />
                                             </div>
                                             <div>

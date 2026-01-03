@@ -25,8 +25,8 @@ CROP_DATA = {
 }
 
 class Location(BaseModel):
-    latitude: float
-    longitude: float
+    # User sends a string like "21.384515, 47.004177"
+    coordinates: str
 
 def get_location_specific_variation(crop_name: str, lat: float, lon: float):
     """
@@ -61,7 +61,20 @@ def calculate_suitability(crop_name, t, h, lat, lon):
 
 @router.post("/", response_model=List[Dict[str, Union[str, int]]])
 async def get_demo_prediction(loc: Location):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={loc.latitude}&longitude={loc.longitude}&current=temperature_2m,relative_humidity_2m"
+    try:
+        # Parse the string coordinates "Lat, Long"
+        parts = loc.coordinates.split(',')
+        if len(parts) != 2:
+            raise ValueError
+        latitude = float(parts[0].strip())
+        longitude = float(parts[1].strip())
+    except:
+        raise HTTPException(
+            status_code=422, 
+            detail="Invalid format. Please provide coordinates as 'latitude, longitude'"
+        )
+
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,relative_humidity_2m"
     
     async with httpx.AsyncClient() as client:
         try:
@@ -75,7 +88,7 @@ async def get_demo_prediction(loc: Location):
     
     results = []
     for name in CROP_DATA:
-        score = calculate_suitability(name, t, h, loc.latitude, loc.longitude)
+        score = calculate_suitability(name, t, h, latitude, longitude)
         results.append({"crop": name, "percentage": score})
     
     # Sort and return top 3

@@ -14,8 +14,10 @@ import {
     ChevronRight,
     RotateCcw,
     Droplets,
-    Waves
+    Waves,
+    Sprout
 } from 'lucide-react';
+import PredictCrop from './PredictCrop';
 
 interface Farm {
     photo: string | null;
@@ -45,6 +47,10 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+    // Predict Crop State
+    const [predictModalOpen, setPredictModalOpen] = useState(false);
+    const [selectedCoordinates, setSelectedCoordinates] = useState<string>('');
 
     // Sensor Data State (Map sensor_id -> Data)
     const [sensorDataMap, setSensorDataMap] = useState<Record<string, { soil_moisture: number; water_tank_level: number }>>({});
@@ -282,6 +288,25 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
                                                 </div>
                                             </div>
 
+                                            {/* Action Buttons */}
+                                            <div className="flex gap-3 mt-4">
+                                                <button
+                                                    onClick={() => {
+                                                        const coords = farm.location;
+                                                        if (coords) {
+                                                            setSelectedCoordinates(coords);
+                                                            setPredictModalOpen(true);
+                                                        } else {
+                                                            alert("No location coordinates found for this farm.");
+                                                        }
+                                                    }}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                                >
+                                                    <Sprout className="w-4 h-4" />
+                                                    Predict Crop
+                                                </button>
+                                            </div>
+
                                             {/* Live Sensor Data Section */}
                                             {farm.sensor_id && (
                                                 <div className="mt-2 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -422,6 +447,16 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
                         {scale === 1 ? 'Scroll to zoom • Click buttons' : 'Drag to pan • Scroll to zoom'}
                     </div>
                 </div>
+            )}
+            {/* Predict Crop Modal */}
+            {predictModalOpen && selectedCoordinates && (
+                <PredictCrop
+                    coordinates={selectedCoordinates}
+                    onClose={() => {
+                        setPredictModalOpen(false);
+                        setSelectedCoordinates('');
+                    }}
+                />
             )}
         </>
     );
