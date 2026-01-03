@@ -9,6 +9,7 @@ import { ThemeToggle } from './ThemeToggle';
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'Farms', href: '/farms' },
+  { name: 'Service Centers', href: '/service-centers' }, // New option added here
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
   { name: 'Admin', href: '/admin' },
