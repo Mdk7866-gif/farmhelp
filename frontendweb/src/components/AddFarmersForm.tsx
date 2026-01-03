@@ -26,6 +26,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'submitting_data' | 'uploading' | 'success' | 'error'>('idle');
     const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number }>({ current: 0, total: 0 });
+    const [errorMessage, setErrorMessage] = useState('');
 
     if (!isOpen) return null;
 
@@ -58,12 +59,33 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
             const farmsPayload: Record<string, any> = {};
             const uploadTasks: { farmKey: string; file: File }[] = [];
 
-            farms.forEach((farm, index) => {
+            // Validation Regex: Number,Number (No spaces)
+            // e.g. 18.5204,73.8567
+            const coordRegex = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+
+            for (let index = 0; index < farms.length; index++) {
+                const farm = farms[index];
                 const farmKey = `farm_${index + 1}`;
+
+                // --- VALIDATION START ---
+                const loc = farm.location.trim(); // We trim outer whitespace, but check inner format
+                if (!coordRegex.test(loc)) {
+                    throw new Error(`Farm ${index + 1}: Coordinates must be 'lat,long' without spaces (e.g. 18.52,73.85)`);
+                }
+                const [latStr, longStr] = loc.split(',');
+                const lat = parseFloat(latStr);
+                const lng = parseFloat(longStr);
+                if (lat < -90 || lat > 90) {
+                    throw new Error(`Farm ${index + 1}: Latitude must be between -90 and 90`);
+                }
+                if (lng < -180 || lng > 180) {
+                    throw new Error(`Farm ${index + 1}: Longitude must be between -180 and 180`);
+                }
+                // --- VALIDATION END ---
 
                 // Add to payload - send filename but NO file yet
                 farmsPayload[farmKey] = {
-                    location: farm.location,
+                    location: loc, // use clean loc
                     sensor_id: farm.sensor_id,
                     photo: farm.photoFile ? farm.photoFile.name : null
                 };
@@ -72,7 +94,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 if (farm.photoFile) {
                     uploadTasks.push({ farmKey, file: farm.photoFile });
                 }
-            });
+            }
 
             const farmerData = {
                 name: name,
@@ -134,8 +156,9 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 setUploadProgress({ current: 0, total: 0 });
             }, 2000);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error submitting form:', error);
+            setErrorMessage(error.message || 'Error submitting form');
             setStatus('error');
         } finally {
             setLoading(false);
@@ -257,9 +280,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                                     value={farm.location}
                                                     onChange={(e) => updateFarm(farm.id, 'location', e.target.value)}
                                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 p-3 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
-                                                    placeholder="e.g. 18.846558, 74.140798
-
-"
+                                                    placeholder="e.g. 18.846558,74.140798"
                                                 />
                                             </div>
                                             <div>
@@ -310,7 +331,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                             </div>
 
                             {status === 'error' && (
-                                <p className="text-red-500 text-center bg-red-50 dark:bg-red-900/10 p-3 rounded-lg">Error submitting. Please check your data and try again.</p>
+                                <p className="text-red-500 text-center bg-red-50 dark:bg-red-900/10 p-3 rounded-lg">{errorMessage}</p>
                             )}
 
                             <div className="pt-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3 sticky bottom-0 bg-white dark:bg-gray-900 py-4">

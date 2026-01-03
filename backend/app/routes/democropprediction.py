@@ -62,16 +62,23 @@ def calculate_suitability(crop_name, t, h, lat, lon):
 @router.post("/", response_model=List[Dict[str, Union[str, int]]])
 async def get_demo_prediction(loc: Location):
     try:
-        # Parse the string coordinates "Lat, Long"
+        if ' ' in loc.coordinates:
+             raise ValueError("Spaces are not allowed")
+        
         parts = loc.coordinates.split(',')
         if len(parts) != 2:
             raise ValueError
-        latitude = float(parts[0].strip())
-        longitude = float(parts[1].strip())
-    except:
+        
+        latitude = float(parts[0])
+        longitude = float(parts[1])
+        
+        if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
+             raise ValueError("Coordinates out of range")
+             
+    except Exception as e:
         raise HTTPException(
             status_code=422, 
-            detail="Invalid format. Please provide coordinates as 'latitude, longitude'"
+            detail=f"Invalid format. Please use 'latitude,longitude' without spaces (e.g. 21.38,47.00). {str(e)}"
         )
 
     url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,relative_humidity_2m"
