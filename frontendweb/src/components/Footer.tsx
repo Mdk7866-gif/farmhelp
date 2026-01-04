@@ -50,8 +50,8 @@ export default function Footer() {
             <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
               Contact
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">📞 +91 XXXXX XXXXX</p>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">📍 Visit nearest service center</p>
+            <p className="text-gray-600 dark:text-gray-400">📞 +91 85112 74216</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">📧mujamahe@gmail.com</p>
             <p className="text-gray-600 dark:text-gray-400 mt-1">🕒 9 AM – 6 PM</p>
           </div>
 
