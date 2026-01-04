@@ -19,6 +19,7 @@ import {
     ChevronRight,
     RotateCcw
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface Farm {
     photo: string | null;
@@ -367,7 +368,7 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                                 <div className="w-full md:w-48 h-32 flex-shrink-0 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden group relative">
                                                     {farm.photo ? (
                                                         <div className="w-full h-full relative cursor-pointer" onClick={() => openLightbox(farm.photo!)}>
-                                                            <img
+                                                            <Image
                                                                 src={farm.photo}
                                                                 alt={`Farm ${index + 1}`}
                                                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -526,7 +527,7 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                 cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
                             }}
                         >
-                            <img
+                            <Image
                                 src={farmImages[currentImageIndex]}
                                 className="max-h-[85vh] max-w-[90vw] object-contain shadow-2xl"
                                 draggable={false}

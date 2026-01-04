@@ -62,7 +62,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
             const formData = new FormData();
 
             // Construct the farms dictionary for the JSON payload
-            const farmsPayload: Record<string, any> = {};
+            const farmsPayload: Record<string, { location: string; sensor_id: string; photo: string | null }> = {};
             const uploadTasks: { farmKey: string; file: File }[] = [];
 
             // Validation Regex: Number,Number (No spaces)
@@ -73,7 +73,7 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 const farmKey = `farm_${index + 1}`;
 
                 // --- COORDINATE VALIDATION ---
-                const loc = farm.location.trim(); 
+                const loc = farm.location.trim();
                 if (!coordRegex.test(loc)) {
                     throw new Error(`Farm ${index + 1}: Coordinates must be 'lat,long' without spaces (e.g. 18.52,73.85)`);
                 }
@@ -153,9 +153,10 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 setUploadProgress({ current: 0, total: 0 });
             }, 2000);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error submitting form:', error);
-            setErrorMessage(error.message || 'Error submitting form');
+            const message = error instanceof Error ? error.message : 'Error submitting form';
+            setErrorMessage(message);
             setStatus('error');
         } finally {
             setLoading(false);

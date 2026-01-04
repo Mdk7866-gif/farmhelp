@@ -57,7 +57,7 @@ export default function ContactPage() {
                         Get in Touch
                     </h1>
                     <p className="mt-4 text-xl text-gray-600 dark:text-gray-400">
-                        Have questions about your farm? We're here to help.
+                        Have questions about your farm? We&apos;re here to help.
                     </p>
                 </div>
 

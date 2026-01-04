@@ -163,7 +163,7 @@ export default function ContactFormsPage() {
                                             </div>
                                             <div className="flex items-start gap-3 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
                                                 <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
-                                                <p className="text-sm leading-relaxed italic line-clamp-2">"{msg.problem}"</p>
+                                                <p className="text-sm leading-relaxed italic line-clamp-2">&quot;{msg.problem}&quot;</p>
                                             </div>
                                         </div>
                                     </div>

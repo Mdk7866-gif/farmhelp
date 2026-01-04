@@ -97,7 +97,7 @@ export default function AdminContactPopUpCard({
                                     Message / Problem
                                 </label>
                                 <p className="text-gray-900 dark:text-white mt-2 leading-relaxed italic whitespace-pre-wrap">
-                                    "{message.problem}"
+                                    &quot;{message.problem}&quot;
                                 </p>
                             </div>
                         </div>

@@ -6,8 +6,6 @@ import {
     MapPin,
     Trash2,
     Loader2,
-    Calendar,
-    FileText
 } from 'lucide-react';
 
 interface Application {

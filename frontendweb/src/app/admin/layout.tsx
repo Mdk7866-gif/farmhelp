@@ -45,8 +45,12 @@ export default function AdminLayout({
 
             sessionStorage.setItem('isAdminAuthenticated', 'true');
             setIsAuthenticated(true);
-        } catch (err: any) {
-            setError(err.message || 'Something went wrong');
+        } catch (err: unknown) {
+            let message = 'Something went wrong';
+            if (err instanceof Error) {
+                message = err.message;
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }

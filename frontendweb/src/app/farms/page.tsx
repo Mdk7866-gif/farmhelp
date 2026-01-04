@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Smartphone, Loader2, ArrowLeft } from 'lucide-react';
+import { Search, Smartphone, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import FarmerDetailsCard from '@/components/FarmerDetailsCard';
 
@@ -11,7 +11,14 @@ interface Farmer {
     mobile_no: string;
     home_address: string;
     call_language: string;
-    farms: Record<string, any>;
+    farms: Record<string, FarmDetails>;
+}
+
+interface FarmDetails {
+    location: string;
+    sensor_id: string;
+    photo: string | null;
+    [key: string]: unknown;
 }
 
 export default function FarmsPage() {
@@ -48,8 +55,15 @@ export default function FarmsPage() {
             }
 
             setFarmerData(data);
-        } catch (err: any) {
-            setError(err.message || 'Something went wrong. Please try again.');
+        } catch (err: unknown) {
+            let message = 'Something went wrong. Please try again.';
+            if (err instanceof Error) {
+                message = err.message;
+            } else if (typeof err === 'object' && err !== null && 'detail' in err) {
+                // Handle potential object with detail property if thrown directly
+                message = (err as { detail: string }).detail || message;
+            }
+            setError(message);
         } finally {
             setLoading(false);
         }
