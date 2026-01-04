@@ -78,7 +78,7 @@ export default function ContactPage() {
                             <div>
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Phone</h3>
                                 <p className="mt-1 text-gray-600 dark:text-gray-400">
-                                    +91 XXXXX XXXXX
+                                    +91 85112 74216
                                 </p>
                                 <p className="text-sm text-gray-500 dark:text-gray-500">
                                     Mon-Fri 9am to 6pm
