@@ -51,8 +51,14 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
         e.preventDefault();
         setLoading(true);
         setStatus('submitting_data');
+        setErrorMessage(''); // Clear previous error
 
         try {
+            // --- MOBILE VALIDATION (BLOCKING) ---
+            if (mobileNo.length !== 10) {
+                throw new Error('Invalid Mobile Number: Please enter exactly 10 digits.');
+            }
+
             const formData = new FormData();
 
             // Construct the farms dictionary for the JSON payload
@@ -60,15 +66,14 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
             const uploadTasks: { farmKey: string; file: File }[] = [];
 
             // Validation Regex: Number,Number (No spaces)
-            // e.g. 18.5204,73.8567
             const coordRegex = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
 
             for (let index = 0; index < farms.length; index++) {
                 const farm = farms[index];
                 const farmKey = `farm_${index + 1}`;
 
-                // --- VALIDATION START ---
-                const loc = farm.location.trim(); // We trim outer whitespace, but check inner format
+                // --- COORDINATE VALIDATION ---
+                const loc = farm.location.trim(); 
                 if (!coordRegex.test(loc)) {
                     throw new Error(`Farm ${index + 1}: Coordinates must be 'lat,long' without spaces (e.g. 18.52,73.85)`);
                 }
@@ -81,16 +86,13 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 if (lng < -180 || lng > 180) {
                     throw new Error(`Farm ${index + 1}: Longitude must be between -180 and 180`);
                 }
-                // --- VALIDATION END ---
 
-                // Add to payload - send filename but NO file yet
                 farmsPayload[farmKey] = {
-                    location: loc, // use clean loc
+                    location: loc,
                     sensor_id: farm.sensor_id,
                     photo: farm.photoFile ? farm.photoFile.name : null
                 };
 
-                // Queue file for upload
                 if (farm.photoFile) {
                     uploadTasks.push({ farmKey, file: farm.photoFile });
                 }
@@ -104,7 +106,6 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                 farms: farmsPayload
             };
 
-            // 1. Submit Data Only
             formData.append('farmer_data', JSON.stringify(farmerData));
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/adminaddfarmerdata`, {
@@ -119,14 +120,11 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
             const responseData = await response.json();
             const farmerId = responseData.farmer_id;
 
-            // 2. Upload Images in Parallel
             if (uploadTasks.length > 0) {
                 setStatus('uploading');
                 setUploadProgress({ current: 0, total: uploadTasks.length });
-
                 let completed = 0;
 
-                // Use a concurrency limit if needed, but for now Promise.all is fine for reasonable numbers
                 await Promise.all(uploadTasks.map(async (task) => {
                     const imageFormData = new FormData();
                     imageFormData.append('farmer_id', farmerId);
@@ -147,7 +145,6 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
             setTimeout(() => {
                 onClose();
                 setStatus('idle');
-                // Reset form
                 setName('');
                 setMobileNo('');
                 setHomeAddress('');
@@ -210,7 +207,10 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                             type="tel"
                                             required
                                             value={mobileNo}
-                                            onChange={(e) => setMobileNo(e.target.value)}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                                if (val.length <= 10) setMobileNo(val);
+                                            }}
                                             className="w-full rounded-lg border border-gray-300 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
                                             placeholder="e.g. 9876543210"
                                         />
@@ -330,8 +330,11 @@ export default function AddFarmersForm({ isOpen, onClose }: AddFarmersFormProps)
                                 </button>
                             </div>
 
+                            {/* ALERT MESSAGE BOX */}
                             {status === 'error' && (
-                                <p className="text-red-500 text-center bg-red-50 dark:bg-red-900/10 p-3 rounded-lg">{errorMessage}</p>
+                                <p className="text-red-500 text-center bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border border-red-200 font-medium">
+                                    ⚠️ {errorMessage}
+                                </p>
                             )}
 
                             <div className="pt-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3 sticky bottom-0 bg-white dark:bg-gray-900 py-4">
