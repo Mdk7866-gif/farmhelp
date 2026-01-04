@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, ExternalLink, Image as ImageIcon } from 'lucide-react';
-import Image from 'next/image';
 
 interface ServiceCenterProps {
   name: string;
@@ -45,7 +44,7 @@ const ServiceCentersCard = ({ name, address, phone, timing, image, googleMapsLin
             <span className="text-xs text-gray-400 mt-2">Image unavailable</span>
           </div>
         ) : (
-          <Image
+          <img
             src={image}
             alt={name}
             onLoad={() => setIsLoaded(true)}
