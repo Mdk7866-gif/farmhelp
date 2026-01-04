@@ -22,3 +22,9 @@ dependencies = [
 
 [project.scripts]
 dev = "app.main:start"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "ruff>=0.14.10",
+]
