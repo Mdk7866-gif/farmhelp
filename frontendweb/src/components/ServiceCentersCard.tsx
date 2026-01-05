@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 interface ServiceCenterProps {
   name: string;
@@ -44,13 +45,14 @@ const ServiceCentersCard = ({ name, address, phone, timing, image, googleMapsLin
             <span className="text-xs text-gray-400 mt-2">Image unavailable</span>
           </div>
         ) : (
-          <img
+          <Image
             src={image}
             alt={name}
+            fill
+            sizes="100vw"
             onLoad={() => setIsLoaded(true)}
             onError={() => setError(true)}
-            loading="lazy"
-            className={`w-full h-full object-cover transition-opacity duration-700 ${
+            className={`object-cover transition-opacity duration-700 ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
