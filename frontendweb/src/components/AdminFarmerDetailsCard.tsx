@@ -371,7 +371,9 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                                             <Image
                                                                 src={farm.photo}
                                                                 alt={`Farm ${index + 1}`}
-                                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                                fill
+                                                                sizes="(min-width: 768px) 12rem, 100vw"
+                                                                className="object-cover transition-transform duration-300 group-hover:scale-105"
                                                             />
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                                 <ZoomIn className="w-8 h-8 text-white drop-shadow-md" />
@@ -527,12 +529,16 @@ export default function FarmerDetailsCard({ farmer, onClose, onUpdate, onDelete 
                                 cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
                             }}
                         >
-                            <Image
-                                src={farmImages[currentImageIndex]}
-                                className="max-h-[85vh] max-w-[90vw] object-contain shadow-2xl"
-                                draggable={false}
-                                alt="Farm Detail"
-                            />
+                            <div className="relative w-[90vw] max-w-[90vw] h-[85vh] max-h-[85vh]">
+                                <Image
+                                    src={farmImages[currentImageIndex]}
+                                    alt="Farm Detail"
+                                    fill
+                                    sizes="90vw"
+                                    className="object-contain shadow-2xl"
+                                    draggable={false}
+                                />
+                            </div>
                         </div>
                     </div>
 

@@ -252,6 +252,8 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
                                                             <Image
                                                                 src={farm.photo}
                                                                 alt={`Farm ${index + 1}`}
+                                                                fill
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                             />
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -434,12 +436,16 @@ export default function FarmerDetailsCard({ farmer, onClose }: FarmerDetailsCard
                                 cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
                             }}
                         >
-                            <Image
-                                src={farmImages[currentImageIndex]}
-                                className="max-h-[85vh] max-w-[90vw] object-contain shadow-2xl"
-                                draggable={false}
-                                alt="Farm Detail"
-                            />
+                            <div className="relative w-[90vw] max-w-[90vw] h-[85vh] max-h-[85vh]">
+                                <Image
+                                    src={farmImages[currentImageIndex]}
+                                    alt="Farm Detail"
+                                    fill
+                                    sizes="90vw"
+                                    className="object-contain shadow-2xl"
+                                    draggable={false}
+                                />
+                            </div>
                         </div>
                     </div>
 
