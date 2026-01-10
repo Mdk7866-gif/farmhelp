@@ -1,0 +1,85 @@
+crop name,growth stage,Kc value
+Paddy (Rice),Initial,1.05
+Paddy (Rice),Development,1.25
+Paddy (Rice),Mid-Season,1.15
+Paddy (Rice),Late Season,0.70
+Rice,Initial,1.05
+Rice,Development,1.1
+Rice,Mid-Season,1.2
+Rice,Late Season,0.95
+Maize,Initial,0.75
+Maize,Development,0.75
+Maize,Mid-Season,1.225
+Maize,Late Season,0.5
+Wheat,Initial,0.75
+Wheat,Development,0.75
+Wheat,Mid-Season,1.175
+Wheat,Late Season,0.3
+Barley,Initial,0.75
+Barley,Development,0.75
+Barley,Mid-Season,1.125
+Barley,Late Season,0.3
+Ginger,Initial,0.6
+Ginger,Development,1.07
+Ginger,Mid-Season,1.13
+Ginger,Late Season,0.7
+Soybean,Initial,0.4
+Soybean,Development,0.75
+Soybean,Mid-Season,1.1
+Soybean,Late Season,0.6
+Cotton,Initial,0.2
+Cotton,Development,0.5
+Cotton,Mid-Season,1.175
+Cotton,Late Season,0.7
+Mustard,Initial,0.3
+Mustard,Development,0.6
+Mustard,Mid-Season,1.1
+Mustard,Late Season,0.45
+Sugarcane,Initial,0.4
+Sugarcane,Development,0.75
+Sugarcane,Mid-Season,1.2
+Sugarcane,Late Season,0.8
+Tomato,Initial,0.7
+Tomato,Development,0.85
+Tomato,Mid-Season,1.12
+Tomato,Late Season,0.85
+Buckwheat,Initial,0.3
+Buckwheat,Development,0.7
+Buckwheat,Mid-Season,1.1
+Buckwheat,Late Season,0.5
+Large Cardamom,Initial,0.5
+Large Cardamom,Development,0.6
+Large Cardamom,Mid-Season,0.95
+Large Cardamom,Late Season,0.75
+Turmeric,Initial,0.6
+Turmeric,Development,0.8
+Turmeric,Mid-Season,1.2
+Turmeric,Late Season,0.6
+Orange,Initial,0.8
+Orange,Development,0.35
+Orange,Mid-Season,0.63
+Orange,Late Season,0.78
+Mandarin,Initial,0.8
+Mandarin,Development,0.85
+Mandarin,Mid-Season,1.2
+Mandarin,Late Season,0.8
+Cabbage,Initial,0.7
+Cabbage,Development,0.75
+Cabbage,Mid-Season,1.0
+Cabbage,Late Season,0.9
+Cauliflower,Initial,0.7
+Cauliflower,Development,0.8
+Cauliflower,Mid-Season,1.0
+Cauliflower,Late Season,0.8
+Peas,Initial,0.5
+Peas,Development,0.95
+Peas,Mid-Season,1.15
+Peas,Late Season,1.1
+Potato,Initial,0.5
+Potato,Development,0.75
+Potato,Mid-Season,1.175
+Potato,Late Season,0.8
+Groundnut,Initial,0.4
+Groundnut,Development,0.6
+Groundnut,Mid-Season,1.1
+Groundnut,Late Season,0.6
