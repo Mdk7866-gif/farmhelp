@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FarmHelp Frontend
 
-## Getting Started
+The modern, responsive frontend for the FarmHelp application, built with **Next.js 16** and **Tailwind CSS 4**. It provides an intuitive interface for farmers to access services and for administrators to manage the platform.
 
-First, run the development server:
+## 🚀 Features
+
+### Public Interface
+- **Responsive Design**: Fully responsive layout optimized for mobile and desktop.
+- **Dark Mode**: Integrated dark mode support using `next-themes`.
+- **Farmer Services**:
+  - **Find Farms**: Search and view detailed farmer profiles.
+  - **Crop Prediction**: Interactive tool to predict suitable crops based on farm data.
+  - **Service Centers**: Locate nearby agricultural service centers.
+  - **Forms**: User-friendly forms for contact and application submissions.
+
+### Admin Panel (Restricted)
+- **Dashboard**: Centralized hub for platform management.
+- **Farmer Management**: 
+  - Add new farmers.
+  - View "Active Farmers" with advanced filtering and mobile number search.
+  - Edit and manage farmer details.
+- **Application Tracking**: View and manage submitted applications.
+- **Query Management**: Review contact form submissions.
+- **Security**: Protected routes requiring admin authentication.
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **State/Theme**: `next-themes`
+
+## 📂 Project Structure
+
+```
+frontendweb/
+├── src/
+│   ├── app/
+│   │   ├── admin/             # Restricted admin routes
+│   │   │   ├── activefarmers/ # List of active farmers
+│   │   │   ├── applicationform/ # Application submissions
+│   │   │   └── contact/       # Contact queries
+│   │   ├── farms/             # Public farm search
+│   │   ├── service-centers/   # Service center locator
+│   │   ├── about/             # About page
+│   │   ├── contact/           # Contact page
+│   │   └── page.tsx           # Landing page
+│   ├── components/            # Reusable UI components
+│   │   ├── Admin*.tsx         # Admin-specific components
+│   │   ├── PredictCrop.tsx    # Crop prediction modal/logic
+│   │   └── ...
+│   └── globals.css            # Global styles & Tailwind directives
+├── public/                    # Static assets
+├── next.config.ts             # Next.js configuration
+├── tailwind.config.ts         # Tailwind configuration
+└── .env                       # Environment variables
+```
+
+## ⚡ Getting Started
+
+### Prerequisites
+
+- **Node.js** (Latest LTS recommended)
+- **npm** or **pnpm** or **yarn** or **bun**
+
+### Installation
+
+1. **Install Dependencies**:
+   Navigate to the `frontendweb` directory:
+   ```bash
+   npm install
+   ```
+
+2. **Configuration**:
+   Create a `.env` file in the root of `frontendweb`:
+   ```bash
+   cp envexample.txt .env
+   ```
+   
+   **Required Variable**:
+   - `NEXT_PUBLIC_BACKEND_URL`: URL of your running backend API (e.g., `http://127.0.0.1:8000`).
+
+### ▶️ Running the Application
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Local URL**: `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To create an optimized production build:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+To start the production server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎨 UI/UX Highlights
 
-## Deploy on Vercel
+- **Dynamic Components**: Interactive cards, modals (Popups), and smooth transitions.
+- **Pagination**: Custom pagination for navigating large datasets.
+- **Toast Notifications**: User feedback for successful form submissions or errors.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contribution
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Ensure the **Backend** is running.
+2. Check `eslint.config.mjs` for linting rules.
+3. Run `npm run lint` before committing changes.
