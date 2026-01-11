@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Docker
+Dockerfile
+.dockerignore
+DEPLOY.md
+
+# Documentation
+README.md
+UV_RUN_SETUP.md
