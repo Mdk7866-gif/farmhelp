@@ -101,4 +101,4 @@ To run the full stack locally, you will need two terminal instances.
 -   **Responsive Design**: The web dashboard is fully optimized for mobile admin usage.
 
 ---
-*Created by Mujahid Khan.*
+*Created by Khan Mujahid*
