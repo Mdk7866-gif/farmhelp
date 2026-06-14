@@ -20,8 +20,8 @@ async def get_all_contact_data(db: AsyncIOMotorDatabase = Depends(get_db)):
     """
     Get all contact form data from 'contactfoamdata' collection.
     """
-    # Fetching all records (limited to 1000)
-    contacts = await db["contactfoamdata"].find().to_list(length=1000)
+    # Fetching all records (limited to 1000), sorted newest first
+    contacts = await db["contactfoamdata"].find().sort("_id", -1).to_list(length=1000)
     return [str_object_id(contact) for contact in contacts]
 
 @router.delete("/{id}")

@@ -20,8 +20,8 @@ async def get_all_application_data(db: AsyncIOMotorDatabase = Depends(get_db)):
     """
     Get all application form data from 'applicationfoamdata' collection.
     """
-    # Fetching all records (limited to 1000 to be safe, but conceptually 'all')
-    applications = await db["applicationfoamdata"].find().to_list(length=1000)
+    # Fetching all records (limited to 1000 to be safe, but conceptually 'all'), sorted newest first
+    applications = await db["applicationfoamdata"].find().sort("_id", -1).to_list(length=1000)
     return [str_object_id(app) for app in applications]
 
 @router.delete("/{id}")

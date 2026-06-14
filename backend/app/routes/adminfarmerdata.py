@@ -20,9 +20,9 @@ def str_object_id(data: dict) -> dict:
 async def get_all_farmers(db: AsyncIOMotorDatabase = Depends(get_db)):
     """
     Get all farmer data. 
-    Limited to 100 entries for performance.
+    Limited to 100 entries for performance, sorted newest first.
     """
-    farmers = await db["farmerdata"].find().to_list(length=100)
+    farmers = await db["farmerdata"].find().sort("_id", -1).to_list(length=100)
     return [str_object_id(farmer) for farmer in farmers]
 
 @router.get("/{id}")
