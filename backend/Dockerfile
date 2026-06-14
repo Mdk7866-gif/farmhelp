@@ -1,21 +1,16 @@
-FROM public.ecr.aws/lambda/python:3.12
+FROM python:3.11-slim
 
-# Copy uv from the official image
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
 
-# Set working directory
-WORKDIR ${LAMBDA_TASK_ROOT}
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy only dependency files first (best for caching)
-COPY pyproject.toml uv.lock ./
+# Copy application code
+COPY . .
 
-# 1. Export dependencies WITHOUT hashes and WITHOUT the local project package
-# 2. Install them directly into the Lambda task root
-RUN uv export --frozen --no-dev --no-hashes --no-emit-project > requirements.txt && \
-    pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+# Expose port
+EXPOSE 8000
 
-# Copy the rest of the application
-COPY . ${LAMBDA_TASK_ROOT}
-
-# Set the CMD to your handler
-CMD [ "app.adapter.handler" ]
+# Start FastAPI server
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
